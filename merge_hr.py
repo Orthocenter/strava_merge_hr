@@ -32,48 +32,48 @@ def get_extension_hr(gpxpy_instance):
 
 def main():
     arg_parser = argparse.ArgumentParser(
-        description='Merge HR data from Apple Watch GPX in Wahoo GPX')
-    arg_parser.add_argument('wahoo_file', help='File Wahoo', type=str)
-    arg_parser.add_argument('apple_file', help='File Wahoo', type=str)
+        description='Merge HR data from Apple Watch Watch GPX in iPhone GPX')
+    arg_parser.add_argument('--iphone_file', help='File iPhone', type=str)
+    arg_parser.add_argument('--watch_file', help='File Watch', type=str)
     args = arg_parser.parse_args()
 
-    if not args.wahoo_file:
-        logger.error('Missing argument: Wahoo File')
+    if not args.iphone_file:
+        logger.error('Missing argument: iPhone File')
         sys.exit()
 
-    if not args.apple_file:
-        logger.error('Missing argument: Apple File')
+    if not args.watch_file:
+        logger.error('Missing argument: Apple Watch File')
         sys.exit()
 
-    if os.path.exists(args.wahoo_file):
+    if os.path.exists(args.iphone_file):
         try:
-            wahoo_gpx_file = open(args.wahoo_file, 'r')
-            wahoo_gpx = gpxpy.parse(wahoo_gpx_file)
+            iphone_gpx_file = open(args.iphone_file, 'r')
+            iphone_gpx = gpxpy.parse(iphone_gpx_file)
         except IOError: # whatever reader errors you care about
-            logger.error('Cannot open Wahoo File')
+            logger.error('Cannot open iPhone File')
             sys.exit()
 
-    if os.path.exists(args.apple_file):
+    if os.path.exists(args.watch_file):
         try:
-            apple_gpx_file = open(args.apple_file, 'r')
-            apple_gpx = gpxpy.parse(apple_gpx_file)
+            watch_gpx_file = open(args.watch_file, 'r')
+            watch_gpx = gpxpy.parse(watch_gpx_file)
         except IOError: # whatever reader errors you care about
-            logger.error('Cannot open Apple File')
+            logger.error('Cannot open Apple Watch File')
             sys.exit()
     
-    hr = get_extension_hr(apple_gpx)
+    hr = get_extension_hr(watch_gpx)
 
-    for wahoo_track in wahoo_gpx.tracks:
-        for wahoo_segment in wahoo_track.segments:
-            for wahoo_point in wahoo_segment.points:
-                if hr.get(wahoo_point.time,None) is not None:
-                    wahoo_extensions = wahoo_point.extensions
-                    if not wahoo_extensions:
+    for iphone_track in iphone_gpx.tracks:
+        for iphone_segment in iphone_track.segments:
+            for iphone_point in iphone_segment.points:
+                if hr.get(iphone_point.time,None) is not None:
+                    iphone_extensions = iphone_point.extensions
+                    if not iphone_extensions:
                         pass
 
-                    wahoo_extensions[0].append(hr[wahoo_point.time])
+                    iphone_extensions[0].append(hr[iphone_point.time])
 
-    print(wahoo_gpx.to_xml())
+    print(iphone_gpx.to_xml())
 
 if __name__ == '__main__':
     main()
